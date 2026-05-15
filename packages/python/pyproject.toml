@@ -1,0 +1,47 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pii-vault"
+version = "0.1.0"
+description = "PII tokenization SDK and proxy for AI pipelines"
+authors = ["Mawlaia <dev@mawlaia.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://mawlaia.com"
+repository = "https://github.com/mawlaia/pii-vault"
+packages = [{ include = "pii_vault" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+presidio-analyzer = "^2.2"
+spacy = "^3.7"
+pydantic = "^2.0"
+
+[tool.poetry.extras]
+openai    = ["openai"]
+anthropic = ["anthropic"]
+all       = ["openai", "anthropic"]
+
+[tool.poetry.dependencies.openai]
+version  = "^1.0"
+optional = true
+
+[tool.poetry.dependencies.anthropic]
+version  = "^0.25"
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest            = "^8.0"
+pytest-asyncio    = "^0.23"
+black             = "^24.0"
+ruff              = "^0.4"
+openai            = "^1.0"
+anthropic         = "^0.25"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
