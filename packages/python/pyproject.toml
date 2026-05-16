@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "mawlaia-pii-vault"
-version = "0.1.0"
+version = "0.2.0"
 description = "PII tokenization SDK and proxy for AI pipelines"
 authors = ["Mawlaia <dev@mawlaia.com>"]
 license = "MIT"
@@ -19,6 +19,7 @@ presidio-analyzer = "^2.2"
 spacy = "^3.7"
 pydantic = "^2.0"
 phonenumbers = "^8.13"
+httpx = "^0.27"
 
 [tool.poetry.extras]
 openai    = ["openai"]

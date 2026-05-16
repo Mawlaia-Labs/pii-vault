@@ -2,48 +2,64 @@ from typing import Iterator, Optional
 
 from ..detector import Detector
 from ..tokenizer import Tokenizer
-from ..vault import Vault
+from ..vault import LocalVault
 
 
 class SafeOpenAI:
     """
     Drop-in replacement for openai.OpenAI.
 
-    Usage::
-
-        from pii_vault import SafeOpenAI
+    Local vault (default)::
 
         client = SafeOpenAI(api_key="sk-...", vault_key="my-secret")
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": "Summarise case for John Smith, john@acme.com"}],
+
+    Hosted vault (Mawlaia cloud)::
+
+        client = SafeOpenAI(
+            api_key="sk-...",
+            vault_key="my-hmac-secret",
+            mawlaia_api_key="mwl_live_...",
         )
-        # PII was tokenised before leaving the process; response is already restored.
+
+    Or bring your own vault::
+
+        client = SafeOpenAI(api_key="sk-...", vault_key="...", vault=MyVault())
     """
 
     def __init__(
         self,
-        api_key:     str,
-        vault_key:   str,
-        vault_path:  str = ":memory:",
-        entities:    Optional[list[str]] = None,
-        llm_fallback: bool = False,
-        token_mode:  str = "typed",
+        api_key:          str,
+        vault_key:        str = "",
+        vault_path:       str = ":memory:",
+        mawlaia_api_key:  Optional[str] = None,
+        mawlaia_vault_url: str = "https://api.mawlaia.com",
+        vault=None,
+        entities:         Optional[list[str]] = None,
+        llm_fallback:     bool = False,
+        token_mode:       str = "typed",
         **openai_kwargs,
     ):
         from openai import OpenAI
 
-        self._raw    = OpenAI(api_key=api_key, **openai_kwargs)
-        vault        = Vault(path=vault_path)
-        detector     = Detector(
+        self._raw = OpenAI(api_key=api_key, **openai_kwargs)
+
+        if vault is not None:
+            _vault = vault
+        elif mawlaia_api_key:
+            from ..hosted_vault import HostedVault
+            _vault = HostedVault(api_key=mawlaia_api_key, vault_url=mawlaia_vault_url)
+        else:
+            _vault = LocalVault(path=vault_path)
+
+        detector  = Detector(
             entities=entities,
             llm_fallback=llm_fallback,
             openai_api_key=api_key if llm_fallback else None,
         )
-        tokenizer    = Tokenizer(vault=vault, key=vault_key, mode=token_mode)
+        tokenizer = Tokenizer(vault=_vault, key=vault_key or "default", mode=token_mode)
 
-        self.chat    = _ChatNamespace(self._raw, detector, tokenizer)
-        self.models  = self._raw.models
+        self.chat   = _ChatNamespace(self._raw, detector, tokenizer)
+        self.models = self._raw.models
 
     def __getattr__(self, name: str):
         return getattr(self._raw, name)

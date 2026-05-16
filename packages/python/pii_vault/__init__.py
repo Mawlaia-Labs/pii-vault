@@ -13,10 +13,11 @@ Quick start::
     # John Smith and john@acme.com never left your infrastructure.
 """
 
-from .vault     import Vault
-from .detector  import Detector
-from .tokenizer import Tokenizer
-from .providers import SafeOpenAI, SafeAnthropic
+from .vault         import LocalVault, Vault
+from .hosted_vault  import HostedVault
+from .detector      import Detector
+from .tokenizer     import Tokenizer
+from .providers     import SafeOpenAI, SafeAnthropic
 
-__version__ = "0.1.0"
-__all__ = ["Vault", "Detector", "Tokenizer", "SafeOpenAI", "SafeAnthropic"]
+__version__ = "0.2.0"
+__all__ = ["LocalVault", "Vault", "HostedVault", "Detector", "Tokenizer", "SafeOpenAI", "SafeAnthropic"]
