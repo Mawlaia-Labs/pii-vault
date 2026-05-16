@@ -19,8 +19,10 @@ export { Detector }      from "./detector";
 export { Tokenizer }     from "./tokenizer";
 export { SafeOpenAI }    from "./providers/openai";
 export { SafeAnthropic } from "./providers/anthropic";
+export { HostedVault }   from "./hosted_vault";
 export type { Entity, Message }       from "./models";
 export type { SafeOpenAIOptions }     from "./providers/openai";
 export type { SafeAnthropicOptions }  from "./providers/anthropic";
+export type { HostedVaultOptions }    from "./hosted_vault";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
