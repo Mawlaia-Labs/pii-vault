@@ -1,0 +1,39 @@
+name: Python SDK
+
+on:
+  push:
+    paths:
+      - "packages/python/**"
+      - ".github/workflows/python.yml"
+  pull_request:
+    paths:
+      - "packages/python/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        working-directory: packages/python
+        run: |
+          pip install -e ".[all]"
+          python -m spacy download en_core_web_sm
+
+      - name: Lint
+        working-directory: packages/python
+        run: ruff check pii_vault/
+
+      - name: Test
+        working-directory: packages/python
+        run: pytest tests/ -v
