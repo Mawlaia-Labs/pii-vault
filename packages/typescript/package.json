@@ -1,10 +1,12 @@
 {
-  "name": "@mawlaia/pii-vault",
+  "name": "mawlaia-pii-vault",
   "version": "0.1.0",
   "description": "PII tokenization SDK and proxy for AI pipelines",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "jest --testPathPattern=tests/",
@@ -19,8 +21,12 @@
     "@anthropic-ai/sdk": ">=0.25.0"
   },
   "peerDependenciesMeta": {
-    "openai": { "optional": true },
-    "@anthropic-ai/sdk": { "optional": true }
+    "openai": {
+      "optional": true
+    },
+    "@anthropic-ai/sdk": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",
@@ -35,15 +41,13 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "roots": ["<rootDir>/tests"]
+    "roots": [
+      "<rootDir>/tests"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Mawlaia-Labs/pii-vault"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   },
   "license": "MIT"
 }
