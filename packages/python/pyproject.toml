@@ -3,7 +3,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "pii-vault"
+name = "mawlaia-pii-vault"
 version = "0.1.0"
 description = "PII tokenization SDK and proxy for AI pipelines"
 authors = ["Mawlaia <dev@mawlaia.com>"]
