@@ -18,6 +18,7 @@ python = "^3.10"
 presidio-analyzer = "^2.2"
 spacy = "^3.7"
 pydantic = "^2.0"
+phonenumbers = "^8.13"
 
 [tool.poetry.extras]
 openai    = ["openai"]
