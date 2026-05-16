@@ -47,10 +47,26 @@ class Tokenizer:
             self._vault.store(token, value, entity.entity_type, subject_id)
             result = result[:entity.start] + token + result[entity.end:]
 
+        # HostedVault batches stores; flush them in one API call.
+        if hasattr(self._vault, "flush"):
+            self._vault.flush()
+
         return result
 
     def dehydrate(self, text: str) -> str:
         """Restore all tokens in text back to their original values."""
+        # HostedVault supports batch_retrieve to minimise round-trips.
+        if hasattr(self._vault, "batch_retrieve"):
+            tokens = _TOKEN_RE.findall(text)
+            if not tokens:
+                return text
+            values = self._vault.batch_retrieve(tokens)
+
+            def replace_batch(match: re.Match) -> str:
+                return values.get(match.group(1)) or match.group(1)
+
+            return _TOKEN_RE.sub(replace_batch, text)
+
         def replace(match: re.Match) -> str:
             value = self._vault.retrieve(match.group(1))
             return value if value is not None else match.group(1)

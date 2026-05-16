@@ -3,7 +3,8 @@ import threading
 from typing import Optional
 
 
-class Vault:
+# LocalVault is the canonical name; Vault is kept as a backwards-compatible alias.
+class LocalVault:
     """
     Token ↔ value store backed by SQLite.
 
@@ -72,3 +73,5 @@ class Vault:
 
     def count(self) -> int:
         return self._conn().execute("SELECT COUNT(*) FROM tokens").fetchone()[0]
+
+Vault = LocalVault  # backwards-compatible alias
