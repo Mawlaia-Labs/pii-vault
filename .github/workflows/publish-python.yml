@@ -1,0 +1,53 @@
+name: Publish Python SDK
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        working-directory: packages/python
+        run: |
+          pip install -e ".[all]" ruff pytest pytest-asyncio
+          python -m spacy download en_core_web_sm
+
+      - name: Lint
+        working-directory: packages/python
+        run: ruff check pii_vault/
+
+      - name: Test
+        working-directory: packages/python
+        run: pytest tests/ -v
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install poetry
+        run: pip install poetry
+
+      - name: Build
+        working-directory: packages/python
+        run: poetry build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packages/python/dist/
+          password: ${{ secrets.PYPI_TOKEN }}
