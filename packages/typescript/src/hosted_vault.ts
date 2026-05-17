@@ -106,4 +106,22 @@ export class HostedVault {
     const data = await this.get<{ total_entries: number }>("/v1/pii-vault/stats");
     return data.total_entries;
   }
+
+  async tokenizeText(
+    text: string,
+    options: { entities?: string[]; formatPreserving?: boolean; subjectId?: string } = {},
+  ): Promise<{ text: string; entities: Record<string, unknown>[]; stored: number }> {
+    const body: Record<string, unknown> = {
+      text,
+      format_preserving: options.formatPreserving ?? true,
+    };
+    if (options.entities) body.entities = options.entities;
+    if (options.subjectId) body.subject_id = options.subjectId;
+    return this.post("/v1/pii-vault/tokenize", body);
+  }
+
+  async detokenizeText(text: string): Promise<string> {
+    const data = await this.post<{ text: string }>("/v1/pii-vault/detokenize", { text });
+    return data.text;
+  }
 }

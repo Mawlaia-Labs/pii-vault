@@ -25,4 +25,4 @@ export type { SafeOpenAIOptions }     from "./providers/openai";
 export type { SafeAnthropicOptions }  from "./providers/anthropic";
 export type { HostedVaultOptions }    from "./hosted_vault";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.3.0";
