@@ -91,6 +91,34 @@ class HostedVault:
         resp.raise_for_status()
         return resp.json().get("total_entries", 0)
 
+    # ── Hosted tokenize / detokenize (FPE) ────────────────────────────────────
+
+    def tokenize_text(
+        self,
+        text: str,
+        entities: list[str] | None = None,
+        format_preserving: bool = True,
+        subject_id: str | None = None,
+    ) -> dict:
+        """
+        Detect PII in *text* server-side and replace with format-preserving fakes.
+        Returns {"text": <de-identified>, "entities": [...], "stored": int}.
+        """
+        payload: dict = {"text": text, "format_preserving": format_preserving}
+        if entities:
+            payload["entities"] = entities
+        if subject_id:
+            payload["subject_id"] = subject_id
+        resp = self._client.post(f"{self._base}/v1/pii-vault/tokenize", json=payload)
+        resp.raise_for_status()
+        return resp.json()
+
+    def detokenize_text(self, text: str) -> str:
+        """Reverse a previously tokenized text, restoring original PII values."""
+        resp = self._client.post(f"{self._base}/v1/pii-vault/detokenize", json={"text": text})
+        resp.raise_for_status()
+        return resp.json().get("text", text)
+
     def __del__(self):
         try:
             self._client.close()
