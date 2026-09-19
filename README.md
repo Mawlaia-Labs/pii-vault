@@ -38,6 +38,10 @@ response = client.chat.completions.create(
 - [ ] SOC 2 Type II
 - [ ] HIPAA BAA
 
+## Contributors
+
+- [Adnan Ghribi](https://github.com/aghribi)
+
 ## License
 
 MIT
