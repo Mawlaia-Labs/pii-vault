@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         working-directory: packages/python
         run: |
-          pip install -e ".[all]" ruff pytest pytest-asyncio
+          pip install -e ".[all]" "ruff>=0.4,<0.5" "pytest>=8.0,<9.0" "pytest-asyncio>=0.23,<0.24"
           python -m spacy download en_core_web_sm
 
       - name: Lint
